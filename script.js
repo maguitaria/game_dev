@@ -2,7 +2,7 @@ window.addEventListener('load', function () {
     // canvas setup
     const canvas = this.document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 500;
+    canvas.width = 1000;
     canvas.height = 500;
 
     class InputHandler { // keyboard input
@@ -164,7 +164,7 @@ window.addEventListener('load', function () {
             } else {
                 this.ammoTimer += deltaTime;
             }
-            this.player.update();
+            this.player.update(deltaTime);
             this.enemies.forEach(enemy => {
                 enemy.update();
             });
@@ -172,7 +172,7 @@ window.addEventListener('load', function () {
                 !enemy.markedForDeletion
             });
             if (this.enemyTimer > this.enemyInterval && !this.gameOver) { // add enemies when the game is not over
-                this.addEnemy();
+                this.addEnemy(); // here i made a change,don`t know if it`s correct
                 this.enemyTimer = 0; // set timer to 0
             } else {
                 this.enemyTimer += deltaTime; // otherwise add the animation frame delta to timer
@@ -188,6 +188,13 @@ window.addEventListener('load', function () {
         }
         addEnemy() {
             this.enemies.push(new Angler1(this));
+        }
+        checkCollision(rect1,rect2) {
+            return ( rect1.x < rect2.x + rect2.width &&
+                    rect1.x + rect1.width > rect2.x &&
+                    rect1.y < rect2.y + rect2.height &&
+                    rect1.height + rect1.y > rect2.y
+            )
         }
     }
 
