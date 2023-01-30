@@ -50,9 +50,6 @@ window.addEventListener('load', function () {
         }
     }
 
-    class Particle {
-
-    }
     class Player {
         constructor(game) {
             this.game = game;
@@ -124,12 +121,6 @@ window.addEventListener('load', function () {
         }
     }
 
-    class Layer {
-
-    }
-    class Background {
-
-    }
     class UI {
         constructor(game) {
             this.game = game;
