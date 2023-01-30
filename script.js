@@ -138,14 +138,20 @@ window.addEventListener('load', function () {
             this.color = 'white';
         }
         draw(context) {
+            context.save();
+            context.fillStyle = this.color;
+            context.shadowOffsetX = 2; // distance of x shadow, positive or negative value depends on from which side you want to shadow the object
+            context.shadowOffsetY = 2; 
+            context.shadowColor = 'black'; 
             context.font = this.fontSize + 'px' + this.fontFamily;
             // score
-            context.fillText('Score: ' + this.game.score, 20, 20);
+            context.fillText('Score: ' + this.game.score, 20, 40);
             // ammo
-            context.fillStyle = this.color;
+         
             for (let i = 0; i <= this.game.ammo; i++) {
                 context.fillRect(20 + 5 * i, 50, 3, 20);
             }
+            context.restore();
         }
     }
     class Game {
