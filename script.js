@@ -219,8 +219,10 @@ window.addEventListener('load', function () {
                         projectile.markedForDeletion = true;
                         if (enemy.lives <= 0) {
                             enemy.markedForDeletion = true;
-                            // stop counting score when the game is ended
-                            if (!this.gameOver) this.score += enemy.score;
+
+                        // stop counting score when the game is ended
+                        if (!this.gameOver) this.score += enemy.score;
+
                             if (this.score > this.winningScore) {
                                 this.gameOver = true;
                             }
