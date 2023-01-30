@@ -124,11 +124,38 @@ window.addEventListener('load', function () {
         }
     }
 
-    class Layer {
-
+    class Layer { // handle logic for each individual background layer
+        constructor(game, image, speedModifier) {
+            this.game = game;
+            this.image = image;
+            this.speedModifier = speedModifier;
+            this.width = 1768;
+            this.height = 500;
+            this.x = 0;
+            this.y = 0;
+        }
+        // move background layers when the game is going to the left
+        update() {
+            if (this.x <= -this.width) this.x = 0; // turn on scrolling
+            else this.x -= this.game.speed * this.speedModifier;
+        }
+        draw(context) {
+            context.drawImage(this.image, this.x, this.y);
+        }
     }
-    class Background {
-
+    class Background { // combine all 4 layers  to create the game world
+        constructor(game) {
+            this.game = game;
+            this.image1 = document.getElementById('layer1');
+            this.layer1 = new Layer(this.game, this.image1, 1)
+            this.layers = [this.layer1] // hold all layers in an array
+        }
+        update() {
+            this.layers.forEach(layer => layer.update());
+        }
+        draw(context) {
+            this.layers.forEach(layer => layer.draw(context));
+        }
     }
     class UI {
         constructor(game) {
@@ -180,6 +207,7 @@ window.addEventListener('load', function () {
         constructor(width, height) {
             this.width = width;
             this.height = height;
+            this.background = new Background(this);
             this.player = new Player(this);
             this.input = new InputHandler(this);
             this.ui = new UI(this);
@@ -195,11 +223,13 @@ window.addEventListener('load', function () {
             this.score = 0;
             this.winningScore = 10;
             this.gameTime = 0; // 2 variables to end the game and print message whether you win or lose
-            this.timeLimit = 5000;
+            this.timeLimit = 10000;
+            this.speed = 1;
         }
         update(deltaTime) {
             if (!this.gameOver) this.gameTime += deltaTime; // game time consists of time of playing.Delta time -- time between animation frame
             if (this.gameTime > this.timeLimit) this.gameOver = true;
+            this.background.update(deltaTime);
             this.player.update(deltaTime);
             if (this.ammoTimer > this.ammoInterval) { // every 500ms add ammo, and reset timer to 0
                 if (this.ammo < this.maxAmmo) this.ammo++;
@@ -220,8 +250,8 @@ window.addEventListener('load', function () {
                         if (enemy.lives <= 0) {
                             enemy.markedForDeletion = true;
 
-                        // stop counting score when the game is ended
-                        if (!this.gameOver) this.score += enemy.score;
+                            // stop counting score when the game is ended
+                            if (!this.gameOver) this.score += enemy.score;
 
                             if (this.score > this.winningScore) {
                                 this.gameOver = true;
@@ -240,6 +270,7 @@ window.addEventListener('load', function () {
         }
 
         draw(context) {
+            this.background.draw(context);
             this.player.draw(context);
             this.ui.draw(context);
             this.enemies.forEach(enemy => {
