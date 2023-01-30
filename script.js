@@ -138,20 +138,42 @@ window.addEventListener('load', function () {
             this.color = 'white';
         }
         draw(context) {
-            context.save();
+            context.save(); // takes all instructions down below as an initial pattern
             context.fillStyle = this.color;
             context.shadowOffsetX = 2; // distance of x shadow, positive or negative value depends on from which side you want to shadow the object
-            context.shadowOffsetY = 2; 
-            context.shadowColor = 'black'; 
+            context.shadowOffsetY = 2;
+            context.shadowColor = 'black';
             context.font = this.fontSize + 'px' + this.fontFamily;
             // score
             context.fillText('Score: ' + this.game.score, 20, 40);
             // ammo
-         
+
             for (let i = 0; i <= this.game.ammo; i++) {
                 context.fillRect(20 + 5 * i, 50, 3, 20);
             }
-            context.restore();
+            // timer
+            const formattedTime = (this.game.gameTime * 0.001).toFixed(1);
+            context.fillText('Timer:  ' + formattedTime, 20, 100);
+            // game over messages
+            if (this.game.gameOver) {
+                context.textAlign = 'center';
+                let message1; // messages which will inform about score when the game is over
+                let message2;
+                if (this.game.score > this.game.winningScore) {
+                    message1 = 'YOU WIN';
+                    message2 = 'WELL DONE!'
+                } else {
+                    message1 = 'YOU LOSE';
+                    message2 = 'TRY AGAIN NEXT TIME :)';
+                }
+                context.font = '50px ' + this.fontFamily;
+                context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 40);
+                context.font = '25px ' + this.fontFamily;
+                context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 + 40);
+            }
+
+
+            context.restore(); // restores the canvas settings to declared one above
         }
     }
     class Game {
@@ -172,15 +194,20 @@ window.addEventListener('load', function () {
             this.gameOver = false;
             this.score = 0;
             this.winningScore = 10;
+            this.gameTime = 0; // 2 variables to end the game and print message whether you win or lose
+            this.timeLimit = 5000;
         }
         update(deltaTime) {
+            if (!this.gameOver) this.gameTime += deltaTime; // game time consists of time of playing.Delta time -- time between animation frame
+            if (this.gameTime > this.timeLimit) this.gameOver = true;
+            this.player.update(deltaTime);
             if (this.ammoTimer > this.ammoInterval) { // every 500ms add ammo, and reset timer to 0
                 if (this.ammo < this.maxAmmo) this.ammo++;
                 this.ammoTimer = 0;
             } else {
                 this.ammoTimer += deltaTime;
             }
-            this.player.update(deltaTime);
+
             this.enemies.forEach(enemy => {
                 enemy.update();
                 if (this.checkCollision(this.player, enemy)) {
@@ -192,8 +219,8 @@ window.addEventListener('load', function () {
                         projectile.markedForDeletion = true;
                         if (enemy.lives <= 0) {
                             enemy.markedForDeletion = true;
-
-                            this.score += enemy.score;
+                        // stop counting score when the game is ended
+                        if (!this.gameOver) this.score += enemy.score;
                             if (this.score > this.winningScore) {
                                 this.gameOver = true;
                             }
@@ -219,7 +246,6 @@ window.addEventListener('load', function () {
         }
         addEnemy() {
             this.enemies.push(new Angler1(this));
-            console.log("Enemy addeds")
         }
         checkCollision(rect1, rect2) {
             return (rect1.x < rect2.x + rect2.width &&
