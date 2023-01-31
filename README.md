@@ -1,4 +1,4 @@
-# game_dev
+# Alien exploration 2D game
 This is my personal project of developing a 2D Game with basic Javascript, HTML and CSS.
 Game has a lot of animation and is really fun and easy to play ( use arrows to move the player, tab to shoot enemies , 'd' to debug a game).
 Generally, game has a lot of potential cause there is always an opportunity to develop animation.
