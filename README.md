@@ -4,5 +4,5 @@ Game has a lot of animation and is really fun and easy to play ( use arrows to m
 Generally, game has a lot of potential cause there is always an opportunity to develop animation.
 Hope you enjoy my game.
 P.S Litlle hint for playing :) Collide with small enemies to get double power up!
-Game example: 1<img width="988" alt="game" src="https://user-images.githubusercontent.com/112544437/215891658-a92c7c4c-8427-4a7e-8ac4-2ecbb98fcf7e.png">
+Game example: <img width="988" alt="game" src="https://user-images.githubusercontent.com/112544437/215891658-a92c7c4c-8427-4a7e-8ac4-2ecbb98fcf7e.png">
 
