@@ -5,5 +5,5 @@ Generally, game has a lot of potential cause there is always an opportunity to d
 Hope you enjoy my game.
 
 P.S Litlle hint for playing :) Collide with small enemies to get double power up!
-Game example: <img width="988" alt="game" src="https://user-images.githubusercontent.com/112544437/215891658-a92c7c4c-8427-4a7e-8ac4-2ecbb98fcf7e.png">
+<img width="988" alt="game" src="https://user-images.githubusercontent.com/112544437/215891658-a92c7c4c-8427-4a7e-8ac4-2ecbb98fcf7e.png">
 
