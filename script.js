@@ -52,9 +52,6 @@ window.addEventListener('load', function () {
         }
     }
 
-    class Particle {
-
-    }
     class Player {
         constructor(game) {
             this.game = game;
@@ -186,7 +183,6 @@ window.addEventListener('load', function () {
         }
     }
 
-
     class LuckyFish extends Enemy { // Lucky fish gives additional power when it`s collided with the player. Otherwise,when it`s shoot -- it gives a lot of score.
         constructor(game) {
             super(game);
@@ -243,6 +239,7 @@ window.addEventListener('load', function () {
             this.layers.forEach(layer => layer.draw(context));
         }
     }
+
 
 
     class UI {
