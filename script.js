@@ -28,6 +28,8 @@ window.addEventListener('load', function () {
             });
         }
     }
+
+
     class Projectile { // shooting lasers at enemies
         constructor(game, x, y) {
             this.game = game;
@@ -51,13 +53,45 @@ window.addEventListener('load', function () {
             context.drawImage(this.image, this.x, this.y);
         }
     }
+    class Particle {
+        constructor(game, x, y) {
+            this.game = game;
+            this.x = x;
+            this.y = y;
+            this.image = document.getElementById('gears');
+            this.frameX = Math.floor(Math.random() * 3);
+            this.frameY = Math.floor(Math.random() * 3);
+            this.spriteSize = 50; // size of each gear in png
+            this.sizeModifier = (Math.random() * 0.5 + 0.5).toFixed(1); // rando,ixer of size of gear
+            this.size = this.spriteSize * this.sizeModifier;
+            this.speedX = Math.random() // * 6 +3; // motion of gear in x coordinates
+            this.speedY = Math.random() * -15;
+            this.gravity = 0.5;
+            this.markedForDeletion = false;
+            this.angle = 0;
+            this.va = Math.random() * 0. - 0.1; // velocity of angle rotation
+        }
+        update() {
+            this.angle += this.va;
+            this.speedY += this.gravity;
+            this.x = this.speedX;
+            this.y += this.speedY;
+            if (this.y > this.game.height + this.size || this.x < 0 - this.size)
+                this.markedForDeletion = true;
+        }
+        draw(content) {
+            content.drawImage(this.image, this.frameX * this.spriteSize,
+                this.frameY * this.spriteSize, this.spriteSize, this.spriteSize,
+                this.x, this.y, this.size, this.size);
+        }
+    }
 
     class Player {
         constructor(game) {
             this.game = game;
             this.width = 120;
             this.height = 190;
-            this.x = 40;
+            this.x = 20;
             this.y = 100;
             this.frameX = 0;
             this.frameY = 0;
@@ -296,6 +330,7 @@ window.addEventListener('load', function () {
             this.ui = new UI(this);
             this.keys = [];
             this.enemies = [];
+            this.particles = [];
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.ammo = 20;
@@ -322,24 +357,42 @@ window.addEventListener('load', function () {
             } else {
                 this.ammoTimer += deltaTime;
             }
-
+            this.particles.forEach(particle => {
+                particle.update();
+            })
+            this.particles = this.particles.filter(particle =>
+                !particle.markedForDeletion)
             this.enemies.forEach(enemy => {
                 enemy.update(); //// this
                 if (this.checkCollision(this.player, enemy)) {
                     enemy.markedForDeletion = true;
-                    if (enemy.type = 'lucky') this.player.enterPowerUp();
-                    else this.score--; // if player is not collided with lucky fish,then we decrease its score.It will encourage the player to collide with lucky fish
+                    // adding gears
+                    for (let i = 0; i < 10; i++) {
+                        this.particles.push(new Particle(this,
+                            enemy.x + enemy.width * 0.5,
+                            enemy.y + enemy.height * 0.5))
+                    }
+                    if (enemy.type === 'lucky') { this.player.enterPowerUp() }
+                    else { if (!this.gameOver) this.score--; } // if player is not collided with lucky fish,then we decrease its score.It will encourage the player to collide with lucky fish
                 }
                 this.player.projectiles.forEach(projectile => {
                     if (this.checkCollision(projectile, enemy)) {
                         enemy.lives--;
                         projectile.markedForDeletion = true;
-                        if (enemy.lives <= 0) {
-                            enemy.markedForDeletion = true;
 
+                        if (enemy.lives <= 0) {
+                            for (let i = 0; i < enemy.score; i++) {
+                                this.particles.push(new Particle(this,
+                                    enemy.x + enemy.width * 0.5,
+                                    enemy.y + enemy.height * 0.5));
+                            }
+                            enemy.markedForDeletion = true;
+                            // // adding gears
+                            // this.particles.push(new Projectile(this,
+                            //     enemy.x + enemy.width * 0.5,
+                            //     enemy.y + enemy.height * 0.5))
                             // stop counting score when the game is ended
                             if (!this.gameOver) this.score += enemy.score;
-
                             if (this.score > this.winningScore) {
                                 this.gameOver = true;
                             }
@@ -363,6 +416,9 @@ window.addEventListener('load', function () {
             this.enemies.forEach(enemy => {
                 enemy.draw(context);
             });
+            this.particles.forEach(particle => {
+                particle.draw(context);
+            })
             this.background.layer4.draw(context);
         }
         addEnemy() {
